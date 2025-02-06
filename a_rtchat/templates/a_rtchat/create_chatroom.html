@@ -1,0 +1,25 @@
+{% extends 'layouts/box.html' %}
+
+{% block content %}
+{% if update_chatroom %}
+<h1 class="mb-4">Update Chat Room</h1>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    
+    <button type="submit" >Update</button>    
+</form>
+{% else %}
+<h1 class="mb-4">New Chat Room</h1>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    
+    <button type="submit" >Submit</button>    
+</form>
+{% endif %}
+
+
+{% endblock %}

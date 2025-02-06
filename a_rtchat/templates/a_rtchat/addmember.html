@@ -1,0 +1,31 @@
+{% extends 'layouts/box.html' %}
+
+{% block content %}
+<h1 class="mb-4">Add Participant to {{title}}</h1>
+
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div>
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">S/N</th>
+                <th scope="col">Participants</th> 
+              </tr>
+            </thead>
+            {% for member in members %}
+            <tbody>
+              <tr>
+                <th scope="row">{{forloop.counter}}</th>                
+                <td>{{member.participant}}</td>
+              </tr>              
+            </tbody>
+            {% endfor %}
+          </table>
+    </div>
+    <button type="submit" >Add</button>  
+    <a class="button button-gray ml-1" href="{% url 'chatroom' %}">Cancel</a>  
+</form>
+
+{% endblock %}

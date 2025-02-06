@@ -1,0 +1,32 @@
+{% extends 'layouts/blank.html'%}
+
+{% block content%}
+<form action="{% url 'new_chatroom' %}">
+    <button type="submit" class="mb-4">Create Chat Room</button>    
+</form>
+<div>
+    <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">S/N</th>
+            <th scope="col">Interview Title</th>
+            <th scope="col">Date</th>   
+            <th scope="col">Time</th> 
+            <th scope="col">Add members</th>           
+
+          </tr>
+        </thead>
+        {% for chatroom in chatrooms %}
+        <tbody>
+          <tr>
+            <th scope="row">{{forloop.counter}}</th>
+            <td><a href="{% url 'update_chatroom' chatroom.id %}">{{chatroom.title}}</a></td>
+            <td>{{chatroom.interview_date}}</td> 
+            <td>{{chatroom.interview_time}}</td>  
+            <td><a href ="{% url 'add_member_to_chat' chatroom.id %}">Add Member</a></td>                         
+          </tr>              
+        </tbody>
+        {% endfor %}
+      </table>
+</div>
+{% endblock %}
