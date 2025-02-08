@@ -3,7 +3,6 @@ from .models import *
 
 # Register your models here.
 
-admin.site.register(ChatGroup)
-admin.site.register(GroupMessage)
-admin.site.register(ChatRoom)
+admin.site.register(Chat)
+admin.site.register(ChatMessage)
 admin.site.register(ChatRoom_Member)

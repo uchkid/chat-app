@@ -1,20 +1,22 @@
 from channels.generic.websocket import WebsocketConsumer
-from django.shortcuts import get_object_or_404
-from .models import ChatGroup, GroupMessage
+from django.shortcuts import get_object_or_404, HttpResponse
+from .models import Chat, ChatMessage
 from django.template.loader import render_to_string
 import json
 from asgiref.sync import async_to_sync
 
 class ChatroomConsumer(WebsocketConsumer):
     def connect(self):       
-        self.user = self.scope['user']
+        self.user = self.scope['user']        
+        self.chatroom_id = self.scope['url_route']['kwargs']['chatroom_id']    
         
-        self.chatroom_name = self.scope['url_route']['kwargs']['chatroom_name']
-    
-        self.chatroom = get_object_or_404(ChatGroup, group_name = self.chatroom_name)
-
+        try:
+            self.chatroom = get_object_or_404(Chat, id = self.chatroom_id)
+        except:
+            return HttpResponse("Chatroom not found", status=404)
+        
         async_to_sync(self.channel_layer.group_add) (
-            self.chatroom_name, self.channel_name)
+            self.chatroom_id, self.channel_name)
 
         # add and update online users        
         # if self.user not in self.chatroom.users_online.all():
@@ -25,7 +27,7 @@ class ChatroomConsumer(WebsocketConsumer):
 
     def disconnect(self, close_code):
         async_to_sync(self.channel_layer.group_discard)(
-            self.chatroom_name, self.channel_name
+            self.chatroom_id, self.channel_name
         )
         # remove and update online users
         # if self.user in self.chatroom.users_online.all():
@@ -36,17 +38,17 @@ class ChatroomConsumer(WebsocketConsumer):
         text_data_json = json.loads(text_data)
         body = text_data_json ['body']
 
-        message = GroupMessage.objects.create(
+        message = ChatMessage.objects.create(
             body = body,
             author = self.user,
-            group = self.chatroom
+            chatroom = self.chatroom
         )
         event = {
             'type':'message_handler',
             'message':message,
         }
         async_to_sync(self.channel_layer.group_send) (
-            self.chatroom_name, event)
+            self.chatroom_id, event)
         
     def message_handler(self, event):
         context = {
@@ -57,7 +59,7 @@ class ChatroomConsumer(WebsocketConsumer):
         self.send(text_data=html)
 
     # def update_online_count(self):
-    #     online_count = self.chatroom.users_online.count()        
+    #     online_count = self.chatroom.users_online.count() - 1     
     #     event = {
     #         'type':'online_count_handler',
     #         'online_count':online_count

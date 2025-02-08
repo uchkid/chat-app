@@ -4,16 +4,16 @@ from .models import *
 
 class ChatmessageCreationForm(ModelForm):
     class Meta:
-        model = GroupMessage
+        model = ChatMessage
         fields = ['body']
         widgets = {
             'body':forms.TextInput(attrs={'placeholder': 'Add message ...', 'class':'p-4 text-black', 
                                           'maxlength':300, 'autofocus':True}),
         }
 
-class ChatRoomCreationForm(ModelForm):
+class ChatCreationForm(ModelForm):
     class Meta:
-        model = ChatRoom
+        model = Chat
         fields = ['title', 'interview_date', 'interview_time','company_name', 'vendor_name']
         labels = {
             "title": "Interview Title",

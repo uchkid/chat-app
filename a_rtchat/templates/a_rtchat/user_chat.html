@@ -1,0 +1,22 @@
+{% extends 'layouts/blank.html'%}
+
+{% block content%}
+<table class="table">
+    <thead>
+      <tr>        
+        <th scope="col">Interview Title</th>
+        <th scope="col">Date</th>   
+        <th scope="col">Time</th> 
+      </tr>
+    </thead>
+    {% for user_chat in user_chats %}
+    <tbody>
+      <tr>        
+        <td><a href="{% url 'chat' user_chat.id %}">{{user_chat.title}}</a></td>
+        <td>{{user_chat.interview_date}}</td> 
+        <td>{{user_chat.interview_time}}</td>                                 
+      </tr>              
+    </tbody>
+    {% endfor %}
+  </table>
+{% endblock %}
