@@ -8,22 +8,17 @@ class Chat(TimeStampedModel):
     pkid = models.BigAutoField(primary_key=True, editable=False)
     id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     title = models.CharField(verbose_name=("Title"), max_length=255)
-    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='chat_admin')
     interview_date = models.DateField()
     interview_time = models.TimeField()
     company_name = models.CharField(verbose_name=("Company Name"), max_length=255)
     vendor_name = models.CharField(verbose_name=("Vendor Name"), max_length=255)
-    is_private = models.BooleanField(default=True)
+    is_private = models.BooleanField(default=False)
+    member = models.ManyToManyField(User, related_name='chat_groups', blank=True)
+    users_online= models.ManyToManyField(User, related_name='online_in_groups',blank=True)
 
     def __str__(self):
         return self.title
-
-class ChatRoom_Member(models.Model):
-    chatroom = models.ForeignKey(Chat, related_name='chatroom', on_delete=models.CASCADE)
-    participant = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='chatroom_participant')
-
-    class Meta:
-        unique_together = ('chatroom','participant')
 
 class ChatMessage(models.Model):
     chatroom = models.ForeignKey(Chat, related_name='chat_messages', on_delete=models.CASCADE)

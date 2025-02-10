@@ -1,7 +1,7 @@
 {% extends 'layouts/box.html' %}
 
 {% block content %}
-<h1 class="mb-4">Add Participant to {{title}}</h1>
+<h1 class="mb-4">Add Participant to {{chatroom.title}}</h1>
 
 <form method="POST" enctype="multipart/form-data">
     {% csrf_token %}
@@ -11,21 +11,23 @@
             <thead>
               <tr>
                 <th scope="col">S/N</th>
-                <th scope="col">Participants</th> 
+                <th scope="col">members</th> 
+                <th scope="col"></th>
               </tr>
             </thead>
             {% for member in members %}
             <tbody>
               <tr>
                 <th scope="row">{{forloop.counter}}</th>                
-                <td>{{member.participant}}</td>
+                <td>{{member.username}}</td>
+                <td><a href ="{% url 'remove_member_from_chat' chatroom.id %}">Add Member</a></td>
               </tr>              
             </tbody>
             {% endfor %}
           </table>
     </div>
     <button type="submit" >Add</button>  
-    <a class="button button-gray ml-1" href="{% url 'chatroom' %}">Cancel</a>  
+    <a class="button button-gray ml-1" href="{% url 'chatroom' %}">Done</a>  
 </form>
 
 {% endblock %}

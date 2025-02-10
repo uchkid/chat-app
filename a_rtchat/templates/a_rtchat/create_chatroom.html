@@ -9,6 +9,7 @@
     {{ form.as_p }}
     
     <button type="submit" >Update</button>    
+    <a class="button button-gray ml-1" href="{% url 'chatroom' %}">Cancel</a> 
 </form>
 {% else %}
 <h1 class="mb-4">New Chat Room</h1>
@@ -17,7 +18,8 @@
     {% csrf_token %}
     {{ form.as_p }}
     
-    <button type="submit" >Submit</button>    
+    <button type="submit" >Submit</button> 
+    <a class="button button-gray ml-1" href="{% url 'chatroom' %}">Cancel</a>    
 </form>
 {% endif %}
 

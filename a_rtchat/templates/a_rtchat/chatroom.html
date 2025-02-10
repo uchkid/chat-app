@@ -12,6 +12,7 @@
             <th scope="col">Interview Title</th>
             <th scope="col">Date</th>   
             <th scope="col">Time</th> 
+            <th scope="col">created by</th>
             <th scope="col">Add members</th>           
 
           </tr>
@@ -23,6 +24,7 @@
             <td><a href="{% url 'update_chatroom' chatroom.id %}">{{chatroom.title}}</a></td>
             <td>{{chatroom.interview_date}}</td> 
             <td>{{chatroom.interview_time}}</td>  
+            <td>{{chatroom.created_by}}</td>
             <td><a href ="{% url 'add_member_to_chat' chatroom.id %}">Add Member</a></td>                         
           </tr>              
         </tbody>

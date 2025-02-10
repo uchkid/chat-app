@@ -14,7 +14,7 @@ class ChatmessageCreationForm(ModelForm):
 class ChatCreationForm(ModelForm):
     class Meta:
         model = Chat
-        fields = ['title', 'interview_date', 'interview_time','company_name', 'vendor_name']
+        fields = ['title', 'interview_date', 'interview_time','company_name', 'vendor_name', 'is_private']
         labels = {
             "title": "Interview Title",
             "interview_date": "Interview Date",
@@ -33,5 +33,5 @@ class ChatCreationForm(ModelForm):
         
 class ChatRoom_MembersCreationForm(ModelForm):
     class Meta:
-        model = ChatRoom_Member      
-        fields = ['participant']
+        model = Chat   
+        fields = ['member']
