@@ -1,8 +1,11 @@
-Django
+django
 pillow
 django-cleanup
 django-allauth
 django-htmx
 channels[daphne]
 channels-redis
+django-environ
+whitenoise
+django-cloudinary-storage
 
