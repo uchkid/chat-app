@@ -13,7 +13,8 @@
             <th scope="col">Date</th>   
             <th scope="col">Time</th> 
             <th scope="col">created by</th>
-            <th scope="col">Add members</th>           
+            <th scope="col">Add members</th>  
+            <th scope="col">Chat Link</th>         
 
           </tr>
         </thead>
@@ -25,7 +26,8 @@
             <td>{{chatroom.interview_date}}</td> 
             <td>{{chatroom.interview_time}}</td>  
             <td>{{chatroom.created_by}}</td>
-            <td><a href ="{% url 'add_member_to_chat' chatroom.id %}">Add Member</a></td>                         
+            <td><a href ="{% url 'add_member_to_chat' chatroom.id %}">Add Member</a></td>
+            <td>{{domain}}/chat/room/{{chatroom.id}}</td>                         
           </tr>              
         </tbody>
         {% endfor %}

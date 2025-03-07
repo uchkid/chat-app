@@ -2,7 +2,8 @@ from django.shortcuts import render, get_object_or_404,redirect, HttpResponse
 from django.contrib.auth.decorators import login_required
 from .models import Chat
 from .forms import ChatCreationForm, ChatmessageCreationForm, ChatRoom_MembersCreationForm
-from django.urls import reverse
+from django.conf import settings
+
 
 # Create your views here.
 def home_view(request):    
@@ -13,8 +14,11 @@ def chatroom(request):
     #my_chatroom = Chat.objects.all().order_by('interview_date')
     #my_chatroom = Chat.objects.filter(created_by = request.user).order_by('interview_date')
     my_chatroom = request.user.chat_admin.all().order_by('interview_date')
+    chat_link_domain = getattr(settings, "CHAT_LINK_DOMAIN", "localhost:8000")
+
     context = {
         'chatrooms': my_chatroom,
+        'domain': chat_link_domain
     }   
     return render (request, 'a_rtchat/chatroom.html', context)
 
@@ -81,11 +85,16 @@ def remove_member(request, id):
         
 @login_required
 def userchat_view(request):
-    user_chat =request.user.chat_groups.all()   
-    
-    return render (request, 'a_rtchat/user_chat.html', {'user_chats':user_chat})
+    chat_link_domain = getattr(settings, "CHAT_LINK_DOMAIN", "localhost:8000")
+    user_chat =request.user.chat_groups.all()  
 
-@login_required
+    context = {
+        'user_chats':user_chat,
+        'domain': chat_link_domain
+    } 
+    
+    return render (request, 'a_rtchat/user_chat.html', context)
+
 def chat_view(request, chatroom_id):
     #return HttpResponse(f"chat with id = {chatroom_id}")    
     if chatroom_id:
@@ -114,9 +123,29 @@ def chat_view(request, chatroom_id):
                     return render(request, 'a_rtchat/partials/chat_message_p.html',context)
                     
             return render (request, 'a_rtchat/chat.html', {'chat_messages':chat_messages, 'form':form, 'chatroom':chatroom}) 
-        else: 
-            return HttpResponse("You are not allowed in this chat", status=404)     
+        else:             
+            if not chatroom.is_private:
+                anonymous_name = request.session.get('anonymous_name')
+
+                if not anonymous_name:
+                    return render(request, 'a_rtchat/anonymous_prompt.html', {'chatroom': chatroom})
+
+                # Allow anonymous user to join
+                chat_messages = chatroom.chat_messages.all()[:30]
+                form = ChatmessageCreationForm()
+                return render(request, 'a_rtchat/chat.html', {'chat_messages': chat_messages, 'form': form, 'chatroom': chatroom, 'anonymous_name': anonymous_name})
+            else:
+                return HttpResponse("You are not allowed in this chat", status=404)     
     else:
-        return HttpResponse("Chatroom not found", status=404)
-    
+        return HttpResponse("Chatroom not found", status=404)    
+
+
+def set_anonymous_name(request, chatroom_id):
+    if request.method == "POST":
+        print("function is set_anonymous_name")
+        anonymous_name = request.POST.get("anonymous_name")
+        if anonymous_name:
+            request.session["anonymous_name"] = anonymous_name
+            return redirect("chat", chatroom_id=chatroom_id)
+    return HttpResponse("Invalid request", status=400)   
     

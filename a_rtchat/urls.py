@@ -10,4 +10,5 @@ urlpatterns = [
     path('remove-member/<uuid:id>',remove_member, name="remove_member_from_chat"),
 
     path('chat/room/<uuid:chatroom_id>', chat_view, name='chat'),
+    path("chat/room/<uuid:chatroom_id>/set_name/", set_anonymous_name, name="set_anonymous_name"),
 ]

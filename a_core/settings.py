@@ -21,6 +21,7 @@ env = Env()
 Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 ENVIRONMENT = env('ENVIRONMENT', default="production")
+CHAT_LINK_DOMAIN = env('DOMAIN', default="localhost:8000")
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 

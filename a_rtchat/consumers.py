@@ -7,7 +7,8 @@ from asgiref.sync import async_to_sync
 
 class ChatroomConsumer(WebsocketConsumer):
     def connect(self):       
-        self.user = self.scope['user']        
+        self.user = self.scope['user'] 
+        self.session = self.scope["session"]      
         self.chatroom_id = self.scope['url_route']['kwargs']['chatroom_id']    
         
         try:
@@ -18,11 +19,15 @@ class ChatroomConsumer(WebsocketConsumer):
         async_to_sync(self.channel_layer.group_add) (
             self.chatroom_id, self.channel_name)
 
-        #add and update online users        
-        if self.user not in self.chatroom.users_online.all():
-            self.chatroom.users_online.add(self.user)            
-            self.update_online_count()
-
+        #add and update online users       
+        if not self.user.is_anonymous:            
+            if self.user not in self.chatroom.users_online.all():
+                self.chatroom.users_online.add(self.user)            
+                self.update_online_count()  
+        else:
+            anonymous_name = self.session.get("anonymous_name", "Guest")
+            print(f"Anonymous user joined: {anonymous_name}")
+      
         self.accept()
 
     def disconnect(self, close_code):
@@ -31,11 +36,16 @@ class ChatroomConsumer(WebsocketConsumer):
         )
         # remove and update online users
         if self.chatroom:
-            if self.user in self.chatroom.users_online.all():
-                self.chatroom.users_online.remove(self.user)
-                self.update_online_count()
+            if not self.user.is_anonymous:
+                if self.user in self.chatroom.users_online.all():
+                    self.chatroom.users_online.remove(self.user)
+                    self.update_online_count()
 
     def receive(self, text_data):
+        if self.user.is_anonymous:
+            #print(request.session.get('anonymous_name'))
+            return
+        
         text_data_json = json.loads(text_data)
         body = text_data_json ['body']
 

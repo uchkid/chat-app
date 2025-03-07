@@ -7,6 +7,7 @@
         <th scope="col">Interview Title</th>
         <th scope="col">Date</th>   
         <th scope="col">Time</th> 
+        <th scope="col">Chat Link</th>
       </tr>
     </thead>
     {% for user_chat in user_chats %}
@@ -14,7 +15,8 @@
       <tr>        
         <td><a href="{% url 'chat' user_chat.id %}">{{user_chat.title}}</a></td>
         <td>{{user_chat.interview_date}}</td> 
-        <td>{{user_chat.interview_time}}</td>                                 
+        <td>{{user_chat.interview_time}}</td>      
+        <td>{{domain}}/chat/room/{{user_chat.id}}</td>                           
       </tr>              
     </tbody>
     {% endfor %}

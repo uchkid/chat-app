@@ -1,0 +1,10 @@
+{% extends 'layouts/box.html' %}
+
+{% block content %}
+    <h2>Enter a name to join {{ chatroom.title }}</h2>
+    <form method="POST" action="{% url 'set_anonymous_name' chatroom.id %}">
+        {% csrf_token %}
+        <input type="text" name="anonymous_name" placeholder="Enter your name" required>
+        <button type="submit">Join Chat</button>
+    </form>
+{% endblock %}
